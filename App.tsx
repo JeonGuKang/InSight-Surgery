@@ -219,7 +219,7 @@ const App: React.FC = () => {
       <footer className="text-center py-6 text-muted-foreground text-sm">
         <p>Powered by Gemini. Images are for illustrative purposes only.</p>
         <a 
-          href="mailto:developer-inquiry@example.com?subject=Inquiry about AI Plastic Surgery Simulation" 
+          href="mailto:dev.sweetcode@gmail.com?subject=Inquiry about AI Plastic Surgery Simulation" 
           className="mt-2 inline-block text-primary hover:underline"
         >
           Contact Us
