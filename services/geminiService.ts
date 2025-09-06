@@ -1,6 +1,5 @@
 
 import { GoogleGenAI, Modality } from "@google/genai";
-import { config } from '../config';
 
 const fileToBase64 = (file: File): Promise<{ data: string; mimeType: string }> => {
   return new Promise((resolve, reject) => {
@@ -19,10 +18,9 @@ const fileToBase64 = (file: File): Promise<{ data: string; mimeType: string }> =
   });
 };
 
-export const generateSimulation = async (beforeFile: File, referenceFile: File, prompt: string): Promise<string> => {
-  const apiKey = config.apiKey;
+export const generateSimulation = async (beforeFile: File, referenceFile: File, prompt: string, apiKey: string): Promise<string> => {
   if (!apiKey) {
-    throw new Error("API_KEY is not set in config.ts.");
+    throw new Error("API_KEY is not provided.");
   }
   
   const ai = new GoogleGenAI({ apiKey: apiKey });
@@ -63,6 +61,8 @@ export const generateSimulation = async (beforeFile: File, referenceFile: File, 
     if (error instanceof Error) {
         if (error.message.includes('429')) {
             errorMessage = "API rate limit exceeded. Please wait a moment and try again.";
+        } else if (error.message.includes('400')) {
+            errorMessage = "Invalid API Key. Please check your key and try again.";
         } else {
             // Include the original error message for more context
             errorMessage = `An error occurred during the API call: ${error.message}`;

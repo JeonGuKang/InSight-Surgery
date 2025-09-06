@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import type { UploadedImage } from './types';
 import { generateSimulation } from './services/geminiService';
@@ -6,6 +7,8 @@ import ImageUploader from './components/ImageUploader';
 import ResultDisplay from './components/ResultDisplay';
 import Loader from './components/Loader';
 import { SparklesIcon } from './components/icons/SparklesIcon';
+import { EyeIcon } from './components/icons/EyeIcon';
+import { EyeOffIcon } from './components/icons/EyeOffIcon';
 
 const DEFAULT_PROMPT = `Your task is to act as a plastic surgery simulator. Take the first image (the 'before' photo) and apply the distinct facial features from the second image (the 'reference' photo). Specifically, blend the shape and style of the reference's eyes, nose, and jawline onto the 'before' photo. The result should be a realistic and high-quality image that maintains the original person's core identity but clearly shows the simulated changes. Output *only* the final modified image.`;
 
@@ -19,6 +22,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>(DEFAULT_PROMPT);
   const [theme, setTheme] = useState<Theme>('light');
+  const [apiKey, setApiKey] = useState<string>('');
+  const [isApiKeyVisible, setIsApiKeyVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -28,6 +33,23 @@ const App: React.FC = () => {
       root.classList.remove('dark');
     }
   }, [theme]);
+
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('gemini_api_key');
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+    }
+  }, []);
+
+  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newKey = e.target.value;
+    setApiKey(newKey);
+    localStorage.setItem('gemini_api_key', newKey);
+  };
+  
+  const toggleApiKeyVisibility = () => {
+    setIsApiKeyVisible(prev => !prev);
+  };
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
@@ -49,6 +71,10 @@ const App: React.FC = () => {
   };
 
   const handleSimulate = useCallback(async () => {
+    if (!apiKey) {
+      setError('Please enter your Gemini API Key.');
+      return;
+    }
     if (!beforeImage || !referenceImage) {
       setError('Please upload both your photo and a reference photo.');
       return;
@@ -60,7 +86,7 @@ const App: React.FC = () => {
 
     try {
       const promptToSend = prompt.trim() === '' ? DEFAULT_PROMPT : prompt;
-      const generatedImage = await generateSimulation(beforeImage.file, referenceImage.file, promptToSend);
+      const generatedImage = await generateSimulation(beforeImage.file, referenceImage.file, promptToSend, apiKey);
       setResultImage(generatedImage);
     } catch (err) {
       console.error(err);
@@ -70,7 +96,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [beforeImage, referenceImage, prompt]);
+  }, [beforeImage, referenceImage, prompt, apiKey]);
   
   const handleReset = () => {
     setBeforeImage(null);
@@ -128,10 +154,35 @@ const App: React.FC = () => {
                 </p>
               </div>
 
+              <div className="mb-8">
+                <label htmlFor="api-key" className="block text-sm font-medium text-card-foreground mb-2">
+                  Gemini API Key:
+                </label>
+                <div className="relative">
+                  <input
+                    id="api-key"
+                    type={isApiKeyVisible ? 'text' : 'password'}
+                    value={apiKey}
+                    onChange={handleApiKeyChange}
+                    className="w-full p-3 pr-10 border border-input-border rounded-lg shadow-sm focus:ring-ring focus:border-primary transition-colors bg-background text-foreground placeholder:text-muted-foreground"
+                    placeholder="Enter your Gemini API Key here"
+                    aria-label="Gemini API Key"
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleApiKeyVisibility}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground"
+                    aria-label={isApiKeyVisible ? 'Hide API Key' : 'Show API Key'}
+                  >
+                    {isApiKeyVisible ? <EyeOffIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
               <div className="text-center">
                 <button
                   onClick={handleSimulate}
-                  disabled={!beforeImage || !referenceImage || isLoading}
+                  disabled={!beforeImage || !referenceImage || isLoading || !apiKey}
                   className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 disabled:bg-muted-foreground/50 text-primary-foreground font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-md hover:shadow-lg disabled:cursor-not-allowed transform hover:-translate-y-0.5"
                 >
                   <SparklesIcon className="w-5 h-5 mr-2" />
