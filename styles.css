@@ -1,0 +1,66 @@
+/* 
+  This file is designed to be auto-generated or managed by a theme editor like the one at tweakcn.com.
+  It defines the color palette and other design tokens as CSS custom properties for both light and dark modes.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240, 5%, 96%; /* gray-100 */
+    --foreground: 240, 10%, 4%; /* gray-900 */
+    
+    --card: 0, 0%, 100%; /* white */
+    --card-foreground: 240, 10%, 4%;
+
+    --primary: 214, 100%, 50%; /* #007aff */
+    --primary-foreground: 0, 0%, 100%; /* white */
+
+    --accent: 214, 100%, 95%; /* #e6f2ff */
+    --accent-foreground: 214, 100%, 50%;
+
+    --muted-foreground: 240, 4%, 46%; /* gray-500 */
+    
+    --border: 240, 6%, 90%; /* gray-200 */
+    --input-border: 240, 5%, 84%; /* gray-300 */
+    --ring: 214, 100%, 50%;
+
+    --destructive: 0, 84%, 60%; /* red-500 */
+    --destructive-foreground: 0, 0%, 100%;
+    
+    --success: 145, 63%, 42%; /* green-600 */
+    --success-foreground: 0, 0%, 100%;
+  }
+
+  .dark {
+    --background: 240, 10%, 4%; /* gray-900 */
+    --foreground: 0, 0%, 98%; /* gray-50 */
+
+    --card: 240, 4%, 12%; /* gray-800 */
+    --card-foreground: 0, 0%, 98%;
+
+    --primary: 214, 100%, 50%;
+    --primary-foreground: 0, 0%, 100%;
+    
+    --accent: 217, 89%, 15%; /* dark blue */
+    --accent-foreground: 0, 0%, 98%;
+
+    --muted-foreground: 240, 5%, 65%; /* gray-400 */
+    
+    --border: 240, 4%, 16%; /* gray-700 */
+    --input-border: 240, 4%, 24%; /* gray-600 */
+    --ring: 214, 100%, 50%;
+
+    --destructive: 0, 72%, 51%;
+    --destructive-foreground: 0, 0%, 100%;
+
+    --success: 145, 63%, 42%;
+    --success-foreground: 0, 0%, 100%;
+  }
+
+  /* Apply base styles */
+  body {
+    @apply bg-background text-foreground;
+  }
+}

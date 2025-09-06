@@ -28,12 +28,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ id, label, onImageChange,
 
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-center">
+      <label htmlFor={id} className="block text-sm font-medium text-foreground mb-2 text-center">
         {label}
       </label>
       <div
         onClick={handleContainerClick}
-        className="group aspect-square w-full bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center cursor-pointer hover:border-brand-blue hover:bg-brand-light-blue dark:hover:bg-blue-900/50 transition-all duration-300 relative overflow-hidden"
+        className="group aspect-square w-full bg-background dark:bg-card border-2 border-dashed border-input-border rounded-lg flex items-center justify-center cursor-pointer hover:border-primary hover:bg-accent transition-all duration-300 relative overflow-hidden"
       >
         <input
           id={id}
@@ -47,11 +47,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ id, label, onImageChange,
           <img src={imagePreviewUrl} alt="Preview" className="w-full h-full object-cover" />
         ) : (
           <div className="text-center p-4">
-            <UploadIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 group-hover:text-brand-blue transition-colors"/>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 group-hover:text-brand-blue">
+            <UploadIcon className="w-12 h-12 mx-auto text-muted-foreground group-hover:text-primary transition-colors"/>
+            <p className="mt-2 text-sm text-muted-foreground group-hover:text-primary">
               Click to upload or drag & drop
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">PNG, JPG up to 10MB</p>
+            <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
           </div>
         )}
       </div>
