@@ -10,7 +10,7 @@ import { SparklesIcon } from './components/icons/SparklesIcon';
 import { EyeIcon } from './components/icons/EyeIcon';
 import { EyeOffIcon } from './components/icons/EyeOffIcon';
 
-const DEFAULT_PROMPT = `Your task is to act as a plastic surgery simulator. Take the first image (the 'before' photo) and apply the distinct facial features from the second image (the 'reference' photo). Specifically, blend the shape and style of the reference's eyes, nose, and jawline onto the 'before' photo. The result should be a realistic and high-quality image that maintains the original person's core identity but clearly shows the simulated changes. Output *only* the final modified image.`;
+const DEFAULT_PROMPT = `Given two facial images, use the first image (‘before’ photo) as the base and naturally and realistically apply the key facial features (eyes, nose, jawline, etc.) from the second image (‘reference’ photo) within the realistic boundaries of possible plastic surgery. The changes should be noticeable but maintain the original person's identity and unique characteristics. The resulting image should be high-quality and highly realistic. Output only the final modified image.`;
 
 type Theme = 'light' | 'dark';
 
@@ -39,6 +39,10 @@ const App: React.FC = () => {
     if (storedApiKey) {
       setApiKey(storedApiKey);
     }
+    const storedPrompt = localStorage.getItem('gemini_prompt');
+    if (storedPrompt) {
+        setPrompt(storedPrompt);
+    }
   }, []);
 
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +53,17 @@ const App: React.FC = () => {
   
   const toggleApiKeyVisibility = () => {
     setIsApiKeyVisible(prev => !prev);
+  };
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newPrompt = e.target.value;
+    setPrompt(newPrompt);
+    localStorage.setItem('gemini_prompt', newPrompt);
+  };
+
+  const handleResetPrompt = () => {
+    setPrompt(DEFAULT_PROMPT);
+    localStorage.setItem('gemini_prompt', DEFAULT_PROMPT);
   };
 
   const toggleTheme = () => {
@@ -105,6 +120,7 @@ const App: React.FC = () => {
     setError(null);
     setIsLoading(false);
     setPrompt(DEFAULT_PROMPT);
+    localStorage.setItem('gemini_prompt', DEFAULT_PROMPT);
   };
 
   return (
@@ -137,16 +153,25 @@ const App: React.FC = () => {
               </div>
 
               <div className="mb-8">
-                <label htmlFor="prompt" className="block text-sm font-medium text-card-foreground mb-2">
-                  Describe the changes you want (optional):
-                </label>
+                <div className="flex justify-between items-center mb-2">
+                  <label htmlFor="prompt" className="block text-sm font-medium text-card-foreground">
+                    Describe the changes you want (optional):
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleResetPrompt}
+                    className="text-xs font-semibold text-primary hover:underline focus:outline-none focus:ring-1 focus:ring-ring rounded px-1 py-0.5"
+                  >
+                    Reset to Default
+                  </button>
+                </div>
                 <textarea
                   id="prompt"
                   rows={4}
                   maxLength={300}
                   className="w-full p-3 border border-input-border rounded-lg shadow-sm focus:ring-ring focus:border-primary transition-colors bg-background text-foreground placeholder:text-muted-foreground"
                   value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
+                  onChange={handlePromptChange}
                   placeholder="e.g., Apply the eye shape from the reference photo, but keep my original nose."
                 />
                 <p className="text-right text-xs text-muted-foreground mt-1">
@@ -177,6 +202,9 @@ const App: React.FC = () => {
                     {isApiKeyVisible ? <EyeOffIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                   </button>
                 </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  입력하신 API 키는 서버로 전송되지 않으며, 사용자의 브라우저에만 안전하게 저장됩니다.
+                </p>
               </div>
 
               <div className="text-center">
