@@ -1,0 +1,5 @@
+{
+  "name": "AI Plastic Surgery Simulation",
+  "description": "Upload your photo and a reference photo to see a realistic AI-generated simulation of potential plastic surgery outcomes using Gemini.",
+  "requestFramePermissions": []
+}
